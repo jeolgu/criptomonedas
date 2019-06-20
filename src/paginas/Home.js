@@ -94,15 +94,15 @@ export class Home extends Component {
             <input className="input" type="text" placeholder="Find a repository" />
           </div>
           <div className="control">
-            <a className="button is-info filtro">
+            <button className="button is-info filtro">
               Buscar
-            </a>
+            </button>
           </div>
 
           <div className="control limpiar_filtro">
-            <a className="button is-info limpiar">
+            <button className="button is-info limpiar">
               Limpiar
-            </a>
+            </button>
           </div>
         </div>
 
