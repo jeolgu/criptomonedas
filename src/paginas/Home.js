@@ -1,102 +1,9 @@
 import React, {Component} from 'react';
-import criptomonedas from '../data/criptomonedas.json'
-import Cargando from '../images/cargando.gif';
+import criptomonedas from '../data/criptomonedas.json';
+import CriptoMonedaItem from '../componentes/CriptoMonedaItem.js';
 
 const API_KEY = "L70IBKBWZI5PIGD9";
 const URL_API = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY";
-
-class CriptoMonedaItem extends Component{
-
-  render() {
-
-    const { criptomoneda } = this.props;
-    return (
-          <tbody>
-            <tr>
-              <td>{criptomoneda.codigo}</td>
-              <td>{criptomoneda.nombre}</td>
-              <td>{_getValorMarket(this.state,criptomoneda.codigo)}</td>
-              <td>{_getValorCierre(this.state,criptomoneda.codigo)}</td>
-              <td>{_getValorVolumen(this.state,criptomoneda.codigo)}</td>
-            </tr>
-          </tbody>
-    );
-  }
-}
-
-function comprobarEstado(state, codigo){
-
-  if(
-    state !== null
-    && state[codigo] !== null
-  )
-  {
-    return true
-  }
-  else{
-
-    return false
-  }
-}
-
-function _devuelveCargando(){
-
-  return(
-
-    <img src={Cargando} alt="cargando" className="cargando" />
-  )
-}
-
-function _getValorMarket(state, codigo){
-
-  if(comprobarEstado(state,codigo)){
-
-    return (
-
-      state[codigo].market
-    )
-  }
-  else{
-
-    return(
-      _devuelveCargando()
-    )
-  }
-}
-
-function _getValorCierre(state, codigo){
-
-  if(comprobarEstado(state,codigo)){
-
-    return (
-
-      state[codigo].market
-    )
-  }
-  else{
-
-    return(
-      _devuelveCargando()
-    )
-  }
-}
-
-function _getValorVolumen(state, codigo){
-
-  if(comprobarEstado(state,codigo)){
-
-    return (
-
-      state[codigo].market
-    )
-  }
-  else{
-
-    return(
-      _devuelveCargando()
-    )
-  }
-}
 
 function peticionApi(me, codigo, moneda = "EUR"){
 
@@ -113,7 +20,8 @@ function peticionApi(me, codigo, moneda = "EUR"){
 
           "META":results[Object.keys(results)[0]],
           "HISTORICO" :results[Object.keys(results)[1]],
-          "ERROR": 0
+          "ERROR": 0,
+          "CODIGO": codigo
         };
 
         me.setState( datos )
@@ -159,15 +67,31 @@ export class Home extends Component {
     var me = this;
     criptomonedas.forEach(function(criptomoneda){
 
-        // peticionApi(me, criptomoneda.codigo);
+        peticionApi(me, criptomoneda.codigo);
     })
   }
 
   _renderChanges(){
-
-
-
+    console.log("hay cambios");
     console.log(this.state);
+  }
+
+  _filtrarDatos = (e) => {
+
+    e.preventDefault();
+    var me = this;
+    debugger;
+    console.log("click filtro");
+    var valor_filtro = document.getElementById("filtro").value;
+
+
+  }
+
+  _quitarFiltro = (e) => {
+
+    e.preventDefault();
+    debugger;
+    console.log("quitar filtro");
   }
 
   render () {
@@ -175,26 +99,32 @@ export class Home extends Component {
     return(
 
       <header className="App-header">
-        <p> HOME </p>
-        <div className="field has-addons">
-          <div className="control">
-            <input className="input" type="text" placeholder="Filtrar criptomoneda" />
-          </div>
-          <div className="control">
-            <button className="button is-info filtro">
-              Filtrar
-            </button>
-          </div>
+        <div className="field has-addons central">
 
-          <div className="control limpiar_filtro">
-            <button className="button is-info limpiar">
-              Limpiar
-            </button>
-          </div>
+            <div className="control">
+              <input
+                className="input"
+                type="text"
+                placeholder="Código criptomoneda"
+                id="filtro"
+                name="textoFiltro"
+                ref={inputElement => this.inputFiltro = inputElement} />
+            </div>
+            <div className="control">
+              <button className="button is-info filtro" onClick={this._filtrarDatos}>
+                Filtrar
+              </button>
+            </div>
+
+            <div className="control limpiar_filtro">
+              <button className="button is-info limpiar" onClick={this._quitarFiltro}>
+                Limpiar
+              </button>
+            </div>
+
         </div>
 
-        <table className="table">
-
+        <table className="table footer">
           <thead>
             <tr>
               <th>Código</th>
@@ -204,19 +134,15 @@ export class Home extends Component {
               <th>Volumen</th>
             </tr>
           </thead>
-
           {
             criptomonedas.map(cmoneda => {
 
-              return <CriptoMonedaItem key={cmoneda.id} criptomoneda={cmoneda} />
+              return <CriptoMonedaItem key={cmoneda.id} criptomoneda={cmoneda} estado={this.state} />
             })
           }
 
         </table>
-
         {this._renderChanges()}
-
-
       </header>
     )
   }
