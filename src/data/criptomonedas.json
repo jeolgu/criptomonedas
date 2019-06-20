@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "codigo": "BTC",
+    "nombre": "Bitcoin"
+  },
+  {
+    "id": 2,
+    "codigo": "ETH",
+    "nombre": "Ethereum"
+  },
+  {
+    "id": 3,
+    "codigo": "XRP",
+    "nombre": "Ripple"
+  },
+  {
+    "id": 4,
+    "codigo": "BCH",
+    "nombre": "Bitcoin-Cash"
+  },
+  {
+    "id": 5,
+    "codigo": "EOS",
+    "nombre": "EOS"
+  },
+  {
+    "id": 6,
+    "codigo": "XLM",
+    "nombre": "Stellar"
+  },
+  {
+    "id": 7,
+    "codigo": "LTC",
+    "nombre": "Litecoin"
+  },
+  {
+    "id": 8,
+    "codigo": "ADA",
+    "nombre": "Cardano"
+  },
+  {
+    "id": 9,
+    "codigo": "XMR",
+    "nombre": "Monero"
+  },
+  {
+    "id": 10,
+    "codigo": "USDT",
+    "nombre": "Tether"
+  }
+]

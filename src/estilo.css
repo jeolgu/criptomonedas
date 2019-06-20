@@ -1,0 +1,16 @@
+.filtro {
+
+  border-top-right-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
+}
+
+.limpiar {
+
+  border-top-left-radius: 4px !important;
+  border-bottom-left-radius: 4px !important;
+}
+
+.limpiar_filtro{
+
+  margin-left: 15px;
+}
