@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import criptomonedas from '../data/criptomonedas.json';
 import CriptoMonedaItem from '../componentes/CriptoMonedaItem.js';
+import {DetalleCriptoMoneda} from '../componentes/DetalleCriptoMoneda.js'
 import {getFecha} from '../global/global.js';
 import ASC from '../images/asc.png';
 import btc from '../data/BTC.json';
 
-// const API_KEY = "L70IBKBWZI5PIGD9";
-const API_KEY = "HF8URGNBZ0AVR9I5";
+const API_KEY = "L70IBKBWZI5PIGD9";
+// const API_KEY = "HF8URGNBZ0AVR9I5";
 const URL_API = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY";
 // const URL_API = "../data/BTC.json";
 var ORDENAR = {"MARKET": "", "CIERRE": "", "VOLUMEN": ""}
@@ -325,6 +326,10 @@ console.log(obj_new)
           }
 
         </table>
+        {
+
+          <DetalleCriptoMoneda key={criptomonedas["BTC"]} codigo={criptomonedas["BTC"]} estado={this.state} />
+        }
       </header>
     )
   }

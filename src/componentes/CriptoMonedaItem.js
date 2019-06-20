@@ -1,23 +1,22 @@
 import React, { Component } from 'react';
 import Cargando from '../images/cargando.gif';
 import {getFecha} from '../global/global.js';
-import {DetalleCriptoMoneda} from './DetalleCriptoMoneda.js'
+// import {DetalleCriptoMoneda} from './DetalleCriptoMoneda.js'
 
 export default class CriptoMonedaItem extends Component{
 
-  _getDetalles = (e) => {
-
-    var me = this
-        me.state = this.props.estado
-
-    e.preventDefault();
-    var codigo = e.currentTarget.getAttribute("data-codigo")
-
-    return(
-
-      <DetalleCriptoMoneda key={codigo} codigo={codigo} estado={me.state}/>
-    )
-  }
+  // _getDetalles = (e) => {
+  //
+  //   e.preventDefault();
+  //   var me = this
+  //       me.state = this.props.estado
+  //
+  //   var codigo = e.currentTarget.getAttribute("data-codigo")
+  //   return(
+  //
+  //     <DetalleCriptoMoneda key={codigo} codigo={codigo} estado={me.state} />
+  //   )
+  // }
 
   render() {
 
@@ -27,9 +26,9 @@ export default class CriptoMonedaItem extends Component{
     if(estado[criptomoneda.codigo]["FILTRADO"] === 1 || estado[criptomoneda.codigo]["FILTRADO"] === undefined){
       return (
 
-        <tbody data-codigo={criptomoneda.codigo} onClick={this._getDetalles}>
+        <tbody>
           <tr>
-            <td>{criptomoneda.codigo}</td>
+            <td data-codigo={criptomoneda.codigo} onClick={this._getDetalles}>{criptomoneda.codigo}</td>
             <td>{criptomoneda.nombre}</td>
             <td>{_getValorMarket(estado, criptomoneda.codigo)}</td>
             <td>{_getValorCierre(estado, criptomoneda.codigo)}</td>
