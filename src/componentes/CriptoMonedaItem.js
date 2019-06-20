@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Cargando from '../images/cargando.gif';
+import {getFecha} from '../global/global.js';
 
 export default class CriptoMonedaItem extends Component{
 
@@ -7,7 +8,6 @@ export default class CriptoMonedaItem extends Component{
 
     const { criptomoneda } = this.props;
     const { estado } = this.props;
-debugger;
 
     if(estado[criptomoneda.codigo]["FILTRADO"] === 1 || estado[criptomoneda.codigo]["FILTRADO"] === undefined){
       return (
@@ -30,29 +30,11 @@ debugger;
   }
 }
 
-function getFecha(){
-
-    var fecha = new Date(new Date().getTime())
-    var year = new Date(fecha - (24*60*60*1000)).getFullYear()
-    var month = new Date(fecha - (24*60*60*1000)).getMonth() + 1
-
-    if(month < 10 ) { month = "0"+month}
-    var day = new Date(fecha - (24*60*60*1000)).getDate()
-    var fecha_completa = year.toString() + "-" + month.toString() + "-" + day.toString()
-
-    return fecha_completa;
-}
-
 function getValor(estado, codigo, fecha, busqueda){
 
   var valor = undefined
   if(estado[codigo]["HISTORICO"] !== undefined
     && Object.keys(estado[codigo]["HISTORICO"]).length > 0 ) {
-
-    // var indice_ = Object.keys(estado[codigo]["HISTORICO"][fecha]).find(
-    //     function(a){
-    //         if(a.indexOf(busqueda) !== -1) { return a; }
-    //     })
 
     var indice_
 

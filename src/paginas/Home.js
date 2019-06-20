@@ -1,30 +1,59 @@
 import React, {Component} from 'react';
 import criptomonedas from '../data/criptomonedas.json';
 import CriptoMonedaItem from '../componentes/CriptoMonedaItem.js';
+import {getFecha} from '../global/global.js';
 import ASC from '../images/asc.png';
 
-const API_KEY = "L70IBKBWZI5PIGD9";
-const URL_API = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY";
+// const API_KEY = "L70IBKBWZI5PIGD9";
+// const API_KEY = "HF8URGNBZ0AVR9I5";
+// const URL_API = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY";
+const URL_API = "../data/BTC.json";
+var ORDENAR = {"MARKET": "", "CIERRE": "", "VOLUMEN": ""}
 
 function peticionApi(me, codigo, moneda = "EUR"){
 
-  var dir_api = `${URL_API}&symbol=${codigo}&market=${moneda}&apikey=${API_KEY}}`
+  // var dir_api = `${URL_API}&symbol=${codigo}&market=${moneda}&apikey=${API_KEY}}`
+  var dir_api = `${URL_API}`//`${URL_API}/${codigo}.json`
   var datos = {}
 
-  fetch(dir_api)
-    .then(res => res.json())
-    .then(results => {
+  fetch(`./../data/BTC.json`)
+    .then(res =>{
 
+      debugger
+      res.json()
+
+      })
+    .then(results => {
+debugger;
       if(results.Note === undefined){
 
+        var fecha = getFecha();
         datos[codigo] = {
 
           "META":results[Object.keys(results)[0]],
           "HISTORICO" :results[Object.keys(results)[1]],
           "ERROR": 0,
-          "CODIGO": codigo,
-
+          "CODIGO": codigo
         };
+debugger;
+        if(datos[codigo]["HISTORICO"][fecha] !== undefined) {
+
+          Object.keys(datos[codigo]["HISTORICO"][fecha]).forEach(function(a){
+
+            if(a.indexOf("market cap") !== -1){
+
+              datos[codigo]["MARKET"] = parseFloat(datos[codigo]["HISTORICO"][fecha][a])
+            }
+            else if(a.indexOf("volume") !== -1){
+
+              datos[codigo]["VOLUMEN"] = parseFloat(datos[codigo]["HISTORICO"][fecha][a])
+            }
+            else if(a.indexOf("close (" + moneda) !== -1){
+
+              datos[codigo]["CIERRE"] = parseFloat(datos[codigo]["HISTORICO"][fecha][a])
+            }
+          })
+        }
 
         if(datos[codigo]["FILTRADO"] !== undefined){
 
@@ -53,7 +82,7 @@ function peticionApi(me, codigo, moneda = "EUR"){
         setTimeout( function(){
 
           peticionApi(me, codigo)
-        }, 6000)
+        }, 61000)
       }
       else{
 
@@ -75,7 +104,11 @@ export class Home extends Component {
     }).forEach(function(a){
 
       datos[a] = {}
-      datos[a]["FILTRADO"] = 1;
+      datos[a]["FILTRADO"] = 1
+      datos[a]["CODIGO"] = a
+      datos[a]["MARKET"] = 0.00
+      datos[a]["CIERRE"] = 0.00
+      datos[a]["VOLUMEN"] = 0.00
     })
 
     this.state = datos;
@@ -137,11 +170,54 @@ export class Home extends Component {
     this.setState(obj_);
   }
 
-  _getOrdernar(tipo){
+  // _getOrdernar(tipo){
+  _getOrdernar = (e) => {
 
-    // debugger;
-    // e.preventDefault();
-    console.log(tipo)
+    var me = this
+    var tipo = e.target.getAttribute("data-orden")
+    var arr_ = []
+    var cp = me.state;
+    Object.keys(cp).forEach(function(a,b) { arr_.push(cp[a]) })
+
+    Object.keys(ORDENAR).forEach(function(a){
+
+      if(a === tipo){
+
+        switch(ORDENAR[a]){
+
+          case "ASC":
+            ORDENAR[a] = "DESC"
+            arr_.reverse(function(b,c){ return c[a] - b[a]})
+          break
+          case "DESC":
+            ORDENAR[a] = "ASC"
+            arr_.sort(function(b,c){ return b[a] - c[a]})
+          break
+          default:
+            ORDENAR[a] = "ASC"
+            arr_.sort(function(b,c){ return b[a] - c[a]})
+          break
+        }
+      }
+      else{
+
+        ORDENAR[a] = "";
+      }
+    })
+
+    var obj_new = {};
+    arr_.forEach(function(a){
+
+      obj_new[a.CODIGO] = a
+    })
+
+console.log(obj_new)
+
+    me.setState(obj_new, function(){
+
+      console.log("estado cambiado")
+      console.log(this.state)
+    })
   }
 
   render () {
@@ -179,15 +255,15 @@ export class Home extends Component {
             <tr>
               <th>Código</th>
               <th>Criptomoneda</th>
-              <th className="cursor" data-orden="market" onClick={() => this._getOrdernar("market")}>
+              <th className="cursor" data-orden="MARKET" onClick={this._getOrdernar}>
                 Market Cap
                 <img className="boton_orden oculto" src={ASC} alt="asc" />
               </th>
-              <th className="cursor" data-orden="cierre" onClick={() => this._getOrdernar("cierre")}>
+              <th className="cursor" data-orden="CIERRE" onClick={this._getOrdernar}>
                 Precio Cierre
                 <img className="boton_orden oculto" src={ASC} alt="asc" />
               </th>
-              <th className="cursor" data-orden="volumen" onClick={() => this._getOrdernar("volumen")}>
+              <th className="cursor" data-orden="VOLUMEN" onClick={this._getOrdernar}>
                 Volumen
                 <img className="boton_orden oculto" src={ASC} alt="asc" />
               </th>
