@@ -20,6 +20,11 @@ td, .cursor {
   margin-bottom: 30px;
 }
 
+.icono-grafica{
+
+  width: 20px;
+}
+
 .boton_orden{
 
   width: 8px;
@@ -51,4 +56,9 @@ td, .cursor {
 .cargando {
 
   width: 25px;
+}
+
+.titulo_modal{
+
+  display: contents;
 }

@@ -1,82 +1,118 @@
-import React, {Component} from 'react';
-var CanvasJSReact = require('../lib/canvasjs.react');
-var CanvasJS = CanvasJSReact.CanvasJS;
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+import React, { Component } from 'react';
+import { Chart } from "react-charts";
 
 export class DetalleCriptoMoneda extends Component {
+
+  _getTitulo(estado, moneda = "EUR", cripto = "BTC"){
+
+      if(estado[cripto]["META"] !== undefined){
+
+      var indice_cripto = Object.keys(estado[cripto]["META"]).find(function(a) {
+        if(a.indexOf("Digital Currency Name") !== -1) {
+           return true;
+         }
+       })
+
+       var cripto_moneda = estado[cripto]["META"][indice_cripto]
+
+       var indice_fecha = Object.keys(estado[cripto]["META"]).find(function(a) {
+         if(a.indexOf("Last Refreshed") !== -1) {
+            return true;
+          }
+        })
+
+        var ultima_actu = estado[cripto]["META"][indice_fecha]
+
+       return(
+
+         <div className="titulo_modal">
+            <div>
+              <p>Nombre: {cripto_moneda}</p>
+              <p>Moneda: {moneda}</p>
+            </div>
+            <div>
+              <p>Última actualización:</p>
+              <p> {ultima_actu}</p>
+            </div>
+         </div>
+       )
+
+    }
+  }
 
   render(){
 
     // const { codigo } = this.props.codigo;
-    const { estado } = this.props.estado;
-    debugger;
-    const options = {
-        title: {
-          text: "Basic Column Chart in React"
-        },
-        data: [{
-            type: "column",
-            dataPoints: [
-                { label: "Apple",  y: 10  },
-                { label: "Orange", y: 15  },
-                { label: "Banana", y: 25  },
-                { label: "Mango",  y: 30  },
-                { label: "Grape",  y: 28  }
-            ]
-         }]
-     }
+    const { estado } = this.props.estado
+    const el = this.props
 
-    // return(
-    //
-    //   <div className="modal" id='modal_detalle'>
-    //     <div className="modal-background"></div>
-    //       <div className="modal-content">
-    //         <article className="message is-danger">
-    //           <div className="message-header">
-    //             <p>Danger</p>
-    //             <button className="delete" aria-label="delete"></button>
-    //           </div>
-    //           <div className="message-body">
-    //             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    //             <strong>Pellentesque risus mi</strong>,
-    //             tempus quis placerat ut, porta nec nulla.
-    //             Vestibulum rhoncus ac ex sit amet fringilla.
-    //             Nullam gravida purus diam, et dictum
-    //             efficitur. Aenean ac <em>eleifend lacus</em>,
-    //             in mollis lectus. Donec sodales, arcu et sollicitudin porttitor,
-    //             tortor urna tempor ligula, id porttitor mi magna a neque.
-    //             Donec dui urna, vehicula et sem eget, facilisis sodales sem.
-    //           </div>
-    //         </article>
-    //         <div>
-    //           <CanvasJSChart options = {options} />
-    //         </div>
-    //       </div>
-    //       <button className="modal-close is-large" aria-label="close" onClick={_cerrarModal()}></button>
-    //       {_mostrarModal()}
-    //     </div>
-    // )
+    var datos = [];
+
+    if(el.estado[el.codigo]["HISTORICO"] !== undefined){
+
+        Object.keys(el.estado[el.codigo]["HISTORICO"]).forEach(function(a){
+
+            var f_ = a.split("-").pop();
+            var indice_f = Object.keys(el.estado[el.codigo]["HISTORICO"][a]).find(function(b) {
+
+                if(b.indexOf("close (EUR)") !== -1){
+
+                    return true;
+                }
+            })
+
+            var valor_f = el.estado[el.codigo]["HISTORICO"][a][indice_f]
+            datos.push({x: f_, y: valor_f})
+        })
+    }
+
+    if(datos.length === 0){
+
+      datos.push({x:0,y:0})
+    }
+
+      const data = [
+        {
+          label: "JUNIO",
+          data: datos
+        }
+      ];
+
     return(
 
       <div className="modal" id='modal_detalle'>
         <div className="modal-background"></div>
           <div className="modal-content">
-            
+            <article className="message">
+              <div className="message-header">
+                {this._getTitulo(this.props.estado)}
+                <button className="delete" aria-label="delete" onClick={_cerrarModal}></button>
+              </div>
+              <div className="message-body">
+                <div
+                    style={{
+                      width: "100%",
+                      height: "220px"
+                    }}
+                >
+                  <Chart
+                    data={data}
+                    axes={[
+                      { primary: true, type: "linear", position: "bottom" },
+                      { type: "linear", position: "left" }
+                    ]}
+                    />
+                </div>
+              </div>
+            </article>
           </div>
-          <button className="modal-close is-large" aria-label="close"></button>
         </div>
     )
   }
 }
 
-function _mostrarModal(){
-
-  // var elemento = document.getElementById("modal_detalle")
-  // elemento.classList.add("is-active")
-}
-
 function _cerrarModal(){
 
-  // var elemento = document.getElementById("modal_detalle")
-  // elemento.classList.remove("is-active")
+  var elemento = document.getElementById("modal_detalle")
+  elemento.classList.remove("is-active")
 }

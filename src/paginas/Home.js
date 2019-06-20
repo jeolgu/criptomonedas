@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import criptomonedas from '../data/criptomonedas.json';
+import btc from '../data/BTC.json';
+import ASC from '../images/asc.png';
+import {getFecha} from '../global/global.js';
 import CriptoMonedaItem from '../componentes/CriptoMonedaItem.js';
 import {DetalleCriptoMoneda} from '../componentes/DetalleCriptoMoneda.js'
-import {getFecha} from '../global/global.js';
-import ASC from '../images/asc.png';
-import btc from '../data/BTC.json';
 
 const API_KEY = "L70IBKBWZI5PIGD9";
 // const API_KEY = "HF8URGNBZ0AVR9I5";
@@ -88,11 +88,11 @@ function peticionApi(me, codigo, moneda = "EUR"){
     })
 }
 
-function json_local(me, codigo, moneda = "EUR"){
+function jsonLocal(me, codigo, moneda = "EUR"){
 
   var results = btc
   var datos = {}
-  var fecha = getFecha();
+  var fecha = "2019-06-19";//getFecha("local");
   datos[codigo] = {
 
     "META":results[Object.keys(results)[0]],
@@ -168,7 +168,7 @@ export class Home extends Component {
     criptomonedas.forEach(function(criptomoneda){
 
         // peticionApi(me, criptomoneda.codigo);
-        json_local(me, criptomoneda.codigo);
+        jsonLocal(me, criptomoneda.codigo);
     })
   }
 
@@ -316,6 +316,9 @@ console.log(obj_new)
                 Volumen
                 <img className="boton_orden oculto" src={ASC} alt="asc" />
               </th>
+              <th className="cursor">
+                Ver
+              </th>
             </tr>
           </thead>
           {
@@ -327,8 +330,7 @@ console.log(obj_new)
 
         </table>
         {
-
-          <DetalleCriptoMoneda key={criptomonedas["BTC"]} codigo={criptomonedas["BTC"]} estado={this.state} />
+          <DetalleCriptoMoneda key={criptomonedas["BTC"]} codigo="BTC" estado={this.state} />
         }
       </header>
     )

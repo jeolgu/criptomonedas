@@ -1,22 +1,10 @@
 import React, { Component } from 'react';
 import Cargando from '../images/cargando.gif';
+import grafica from '../images/grafica.png';
 import {getFecha} from '../global/global.js';
 // import {DetalleCriptoMoneda} from './DetalleCriptoMoneda.js'
 
 export default class CriptoMonedaItem extends Component{
-
-  // _getDetalles = (e) => {
-  //
-  //   e.preventDefault();
-  //   var me = this
-  //       me.state = this.props.estado
-  //
-  //   var codigo = e.currentTarget.getAttribute("data-codigo")
-  //   return(
-  //
-  //     <DetalleCriptoMoneda key={codigo} codigo={codigo} estado={me.state} />
-  //   )
-  // }
 
   render() {
 
@@ -24,15 +12,21 @@ export default class CriptoMonedaItem extends Component{
     const { estado } = this.props;
 
     if(estado[criptomoneda.codigo]["FILTRADO"] === 1 || estado[criptomoneda.codigo]["FILTRADO"] === undefined){
+
       return (
 
         <tbody>
           <tr>
-            <td data-codigo={criptomoneda.codigo} onClick={this._getDetalles}>{criptomoneda.codigo}</td>
+            <td data-codigo={criptomoneda.codigo}>{criptomoneda.codigo}</td>
             <td>{criptomoneda.nombre}</td>
             <td>{_getValorMarket(estado, criptomoneda.codigo)}</td>
             <td>{_getValorCierre(estado, criptomoneda.codigo)}</td>
             <td>{_getValorVolumen(estado, criptomoneda.codigo)}</td>
+            <td>
+              <button className="button is-info detalle" onClick={_getDetalles}>
+                <img className="icono-grafica" src={grafica} alt="grafica" />
+              </button>
+            </td>
           </tr>
         </tbody>
       )
@@ -91,7 +85,7 @@ function _renderView(estado, codigo, busqueda, moneda){
 
   if(comprobarEstado(estado,codigo)){
 
-    const fecha_completa = getFecha();
+    const fecha_completa = "2019-06-19"//getFecha();
     var valor = getValor(estado, codigo, fecha_completa, busqueda)
 
     if(valor !== undefined){
@@ -140,4 +134,10 @@ function _getValorVolumen(estado, codigo, moneda = "EUR"){
 
     _renderView(estado, codigo, busqueda, moneda)
   )
+}
+
+function _getDetalles(){
+
+    var elemento = document.getElementById("modal_detalle")
+    elemento.classList.add("is-active")
 }
