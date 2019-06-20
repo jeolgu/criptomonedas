@@ -5,26 +5,21 @@ import {getFecha} from '../global/global.js';
 import ASC from '../images/asc.png';
 
 // const API_KEY = "L70IBKBWZI5PIGD9";
-// const API_KEY = "HF8URGNBZ0AVR9I5";
-// const URL_API = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY";
-const URL_API = "../data/BTC.json";
+const API_KEY = "HF8URGNBZ0AVR9I5";
+const URL_API = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY";
+// const URL_API = "../data/BTC.json";
 var ORDENAR = {"MARKET": "", "CIERRE": "", "VOLUMEN": ""}
 
 function peticionApi(me, codigo, moneda = "EUR"){
 
-  // var dir_api = `${URL_API}&symbol=${codigo}&market=${moneda}&apikey=${API_KEY}}`
-  var dir_api = `${URL_API}`//`${URL_API}/${codigo}.json`
+  var dir_api = `${URL_API}&symbol=${codigo}&market=${moneda}&apikey=${API_KEY}}`
+  // var dir_api = `${URL_API}`//`${URL_API}/${codigo}.json`
   var datos = {}
 
-  fetch(`./../data/BTC.json`)
-    .then(res =>{
-
-      debugger
-      res.json()
-
-      })
+  fetch(dir_api)
+    .then(res => res.json() )
     .then(results => {
-debugger;
+
       if(results.Note === undefined){
 
         var fecha = getFecha();
@@ -35,7 +30,7 @@ debugger;
           "ERROR": 0,
           "CODIGO": codigo
         };
-debugger;
+
         if(datos[codigo]["HISTORICO"][fecha] !== undefined) {
 
           Object.keys(datos[codigo]["HISTORICO"][fecha]).forEach(function(a){
