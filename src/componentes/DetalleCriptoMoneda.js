@@ -8,6 +8,9 @@ export class DetalleCriptoMoneda extends Component {
 
   render(){
 
+    const { codigo } = this.props.codigo;
+    const { estado } = this.props.estado;
+    debugger;
     const options = {
         title: {
           text: "Basic Column Chart in React"
@@ -26,32 +29,45 @@ export class DetalleCriptoMoneda extends Component {
 
     return(
 
-      <div className="modal" id='modal_error'>
-          <div className="modal-background"></div>
-            <div className="modal-content">
-              <article className="message is-danger">
-                <div className="message-header">
-                  <p>Danger</p>
-                  <button className="delete" aria-label="delete"></button>
-                </div>
-                <div className="message-body">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  <strong>Pellentesque risus mi</strong>,
-                  tempus quis placerat ut, porta nec nulla.
-                  Vestibulum rhoncus ac ex sit amet fringilla.
-                  Nullam gravida purus diam, et dictum
-                  efficitur. Aenean ac <em>eleifend lacus</em>,
-                  in mollis lectus. Donec sodales, arcu et sollicitudin porttitor,
-                  tortor urna tempor ligula, id porttitor mi magna a neque.
-                  Donec dui urna, vehicula et sem eget, facilisis sodales sem.
-                </div>
-              </article>
-              <div>
-                <CanvasJSChart options = {options} />
+      <div className="modal" id='modal_detalle'>
+        <div className="modal-background"></div>
+          <div className="modal-content">
+            <article className="message is-danger">
+              <div className="message-header">
+                <p>Danger</p>
+                <button className="delete" aria-label="delete"></button>
               </div>
+              <div className="message-body">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                <strong>Pellentesque risus mi</strong>,
+                tempus quis placerat ut, porta nec nulla.
+                Vestibulum rhoncus ac ex sit amet fringilla.
+                Nullam gravida purus diam, et dictum
+                efficitur. Aenean ac <em>eleifend lacus</em>,
+                in mollis lectus. Donec sodales, arcu et sollicitudin porttitor,
+                tortor urna tempor ligula, id porttitor mi magna a neque.
+                Donec dui urna, vehicula et sem eget, facilisis sodales sem.
+              </div>
+            </article>
+            <div>
+              <CanvasJSChart options = {options} />
             </div>
-            <button className="modal-close is-large" aria-label="close"></button>
           </div>
+          <button className="modal-close is-large" aria-label="close" onClic={_cerrarModal()}></button>
+          {_mostrarModal()}
+        </div>
     )
   }
+}
+
+function _mostrarModal(){
+
+  var elemento = document.getElementById("modal_detalle")
+  elemento.classList.add("is-active")
+}
+
+function _cerrarModal(){
+
+  var elemento = document.getElementById("modal_detalle")
+  elemento.classList.remove("is-active")
 }

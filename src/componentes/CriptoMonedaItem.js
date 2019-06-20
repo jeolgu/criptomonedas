@@ -15,7 +15,7 @@ export default class CriptoMonedaItem extends Component{
 
     return(
 
-      <DetalleCriptoMoneda key={codigo} estado={me.state}/>
+      <DetalleCriptoMoneda key={codigo} codigo={codigo} estado={me.state}/>
     )
   }
 
