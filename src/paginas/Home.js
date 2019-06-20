@@ -3,6 +3,7 @@ import criptomonedas from '../data/criptomonedas.json';
 import CriptoMonedaItem from '../componentes/CriptoMonedaItem.js';
 import {getFecha} from '../global/global.js';
 import ASC from '../images/asc.png';
+import btc from '../data/BTC.json';
 
 // const API_KEY = "L70IBKBWZI5PIGD9";
 const API_KEY = "HF8URGNBZ0AVR9I5";
@@ -86,6 +87,57 @@ function peticionApi(me, codigo, moneda = "EUR"){
     })
 }
 
+function json_local(me, codigo, moneda = "EUR"){
+
+  var results = btc
+  var datos = {}
+  var fecha = getFecha();
+  datos[codigo] = {
+
+    "META":results[Object.keys(results)[0]],
+    "HISTORICO" :results[Object.keys(results)[1]],
+    "ERROR": 0,
+    "CODIGO": codigo
+  };
+
+  if(datos[codigo]["HISTORICO"][fecha] !== undefined) {
+
+    Object.keys(datos[codigo]["HISTORICO"][fecha]).forEach(function(a){
+
+      if(a.indexOf("market cap") !== -1){
+
+        datos[codigo]["MARKET"] = parseFloat(datos[codigo]["HISTORICO"][fecha][a])
+      }
+      else if(a.indexOf("volume") !== -1){
+
+        datos[codigo]["VOLUMEN"] = parseFloat(datos[codigo]["HISTORICO"][fecha][a])
+      }
+      else if(a.indexOf("close (" + moneda) !== -1){
+
+        datos[codigo]["CIERRE"] = parseFloat(datos[codigo]["HISTORICO"][fecha][a])
+      }
+    })
+  }
+
+  if(datos[codigo]["FILTRADO"] !== undefined){
+
+    if(datos[codigo]["FILTRADO"] === 1){
+
+      datos[codigo]["FILTRADO"] = 1
+    }
+    else{
+
+      datos[codigo]["FILTRADO"] = 0
+    }
+  }
+  else{
+
+    datos[codigo]["FILTRADO"] = 1
+  }
+
+  me.setState( datos )
+}
+
 export class Home extends Component {
 
   constructor(){
@@ -114,7 +166,8 @@ export class Home extends Component {
     var me = this;
     criptomonedas.forEach(function(criptomoneda){
 
-        peticionApi(me, criptomoneda.codigo);
+        // peticionApi(me, criptomoneda.codigo);
+        json_local(me, criptomoneda.codigo);
     })
   }
 

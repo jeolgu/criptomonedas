@@ -4,6 +4,17 @@ import {getFecha} from '../global/global.js';
 
 export default class CriptoMonedaItem extends Component{
 
+  _getDetalles = (e) => {
+
+    var me = this
+        me.state = this.props.estado
+
+    e.preventDefault();
+    var codigo = e.currentTarget.getAttribute("data-codigo")
+
+    debugger;
+  }
+
   render() {
 
     const { criptomoneda } = this.props;
@@ -12,7 +23,7 @@ export default class CriptoMonedaItem extends Component{
     if(estado[criptomoneda.codigo]["FILTRADO"] === 1 || estado[criptomoneda.codigo]["FILTRADO"] === undefined){
       return (
 
-        <tbody>
+        <tbody data-codigo={criptomoneda.codigo} onClick={this._getDetalles}>
           <tr>
             <td>{criptomoneda.codigo}</td>
             <td>{criptomoneda.nombre}</td>
