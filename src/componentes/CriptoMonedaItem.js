@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Cargando from '../images/cargando.gif';
 import {getFecha} from '../global/global.js';
+import {DetalleCriptoMoneda} from './DetalleCriptoMoneda.js'
 
 export default class CriptoMonedaItem extends Component{
 
@@ -12,7 +13,10 @@ export default class CriptoMonedaItem extends Component{
     e.preventDefault();
     var codigo = e.currentTarget.getAttribute("data-codigo")
 
-    debugger;
+    return(
+
+      <DetalleCriptoMoneda key={codigo} estado={me.state}/>
+    )
   }
 
   render() {
