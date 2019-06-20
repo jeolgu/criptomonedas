@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import criptomonedas from '../data/criptomonedas.json'
+import Cargando from '../images/cargando.gif';
 
 const API_KEY = "L70IBKBWZI5PIGD9";
 const URL_API = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY";
@@ -7,14 +8,93 @@ const URL_API = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAI
 class CriptoMonedaItem extends Component{
 
   render() {
+
     const { criptomoneda } = this.props;
     return (
-
-        <li>
-          <p>Market Cap: {criptomoneda.codigo} </p>
-          <p>Nombre: {criptomoneda.nombre} </p>
-        </li>
+          <tbody>
+            <tr>
+              <td>{criptomoneda.codigo}</td>
+              <td>{criptomoneda.nombre}</td>
+              <td>{_getValorMarket(this.state,criptomoneda.codigo)}</td>
+              <td>{_getValorCierre(this.state,criptomoneda.codigo)}</td>
+              <td>{_getValorVolumen(this.state,criptomoneda.codigo)}</td>
+            </tr>
+          </tbody>
     );
+  }
+}
+
+function comprobarEstado(state, codigo){
+
+  if(
+    state !== null
+    && state[codigo] !== null
+  )
+  {
+    return true
+  }
+  else{
+
+    return false
+  }
+}
+
+function _devuelveCargando(){
+
+  return(
+
+    <img src={Cargando} alt="cargando" className="cargando" />
+  )
+}
+
+function _getValorMarket(state, codigo){
+
+  if(comprobarEstado(state,codigo)){
+
+    return (
+
+      state[codigo].market
+    )
+  }
+  else{
+
+    return(
+      _devuelveCargando()
+    )
+  }
+}
+
+function _getValorCierre(state, codigo){
+
+  if(comprobarEstado(state,codigo)){
+
+    return (
+
+      state[codigo].market
+    )
+  }
+  else{
+
+    return(
+      _devuelveCargando()
+    )
+  }
+}
+
+function _getValorVolumen(state, codigo){
+
+  if(comprobarEstado(state,codigo)){
+
+    return (
+
+      state[codigo].market
+    )
+  }
+  else{
+
+    return(
+      _devuelveCargando()
+    )
   }
 }
 
@@ -83,6 +163,13 @@ export class Home extends Component {
     })
   }
 
+  _renderChanges(){
+
+
+
+    console.log(this.state);
+  }
+
   render () {
 
     return(
@@ -91,11 +178,11 @@ export class Home extends Component {
         <p> HOME </p>
         <div className="field has-addons">
           <div className="control">
-            <input className="input" type="text" placeholder="Find a repository" />
+            <input className="input" type="text" placeholder="Filtrar criptomoneda" />
           </div>
           <div className="control">
             <button className="button is-info filtro">
-              Buscar
+              Filtrar
             </button>
           </div>
 
@@ -106,14 +193,29 @@ export class Home extends Component {
           </div>
         </div>
 
-        <ul>
+        <table className="table">
+
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Criptomoneda</th>
+              <th>Market Cap</th>
+              <th>Precio Cierre</th>
+              <th>Volumen</th>
+            </tr>
+          </thead>
+
           {
             criptomonedas.map(cmoneda => {
-              return (<h1 key={cmoneda.codigo}>{cmoneda.codigo}</h1>)
-              // return <CriptoMonedaItem key={cmoneda.id} criptomoneda={cmoneda} />
+
+              return <CriptoMonedaItem key={cmoneda.id} criptomoneda={cmoneda} />
             })
           }
-        </ul>
+
+        </table>
+
+        {this._renderChanges()}
+
 
       </header>
     )
