@@ -1,12 +1,34 @@
+.App-header{
+
+  background-color: #e5f3f1;
+  font-size: 16px;
+}
+
 .central{
 
   margin-top: 30px;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+}
+
+td, .cursor {
+
+  cursor: pointer;
 }
 
 .footer{
 
   margin-bottom: 30px;
+}
+
+.boton_orden{
+
+  width: 8px;
+  margin-left: 20px;
+}
+
+.oculto{
+
+  visibility: hidden;
 }
 
 .filtro {

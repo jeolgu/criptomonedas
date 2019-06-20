@@ -6,26 +6,73 @@ export default class CriptoMonedaItem extends Component{
   render() {
 
     const { criptomoneda } = this.props;
-    debugger;
-    return (
-          <tbody>
-            <tr>
-              <td>{criptomoneda.codigo}</td>
-              <td>{criptomoneda.nombre}</td>
-              <td>{_getValorMarket(criptomoneda.estado, criptomoneda.codigo)}</td>
-              <td>{_getValorCierre(criptomoneda.estado, criptomoneda.codigo)}</td>
-              <td>{_getValorVolumen(criptomoneda.estado, criptomoneda.codigo)}</td>
-            </tr>
-          </tbody>
-    );
+    const { estado } = this.props;
+debugger;
+
+    if(estado[criptomoneda.codigo]["FILTRADO"] === 1 || estado[criptomoneda.codigo]["FILTRADO"] === undefined){
+      return (
+
+        <tbody>
+          <tr>
+            <td>{criptomoneda.codigo}</td>
+            <td>{criptomoneda.nombre}</td>
+            <td>{_getValorMarket(estado, criptomoneda.codigo)}</td>
+            <td>{_getValorCierre(estado, criptomoneda.codigo)}</td>
+            <td>{_getValorVolumen(estado, criptomoneda.codigo)}</td>
+          </tr>
+        </tbody>
+      )
+    }
+    else{
+
+      return false
+    }
   }
 }
 
-function comprobarEstado(state, codigo){
-debugger;
+function getFecha(){
+
+    var fecha = new Date(new Date().getTime())
+    var year = new Date(fecha - (24*60*60*1000)).getFullYear()
+    var month = new Date(fecha - (24*60*60*1000)).getMonth() + 1
+
+    if(month < 10 ) { month = "0"+month}
+    var day = new Date(fecha - (24*60*60*1000)).getDate()
+    var fecha_completa = year.toString() + "-" + month.toString() + "-" + day.toString()
+
+    return fecha_completa;
+}
+
+function getValor(estado, codigo, fecha, busqueda){
+
+  var valor = undefined
+  if(estado[codigo]["HISTORICO"] !== undefined
+    && Object.keys(estado[codigo]["HISTORICO"]).length > 0 ) {
+
+    // var indice_ = Object.keys(estado[codigo]["HISTORICO"][fecha]).find(
+    //     function(a){
+    //         if(a.indexOf(busqueda) !== -1) { return a; }
+    //     })
+
+    var indice_
+
+    Object.keys(estado[codigo]["HISTORICO"][fecha]).forEach(
+        function(a){
+            if(a.indexOf(busqueda) !== -1) { indice_ = a; }
+        })
+
+    valor = estado[codigo]["HISTORICO"][fecha][indice_]
+  }
+
+  return valor
+}
+
+function comprobarEstado(estado, codigo){
+
   if(
-    state !== undefined
-    && state[codigo] !== undefined
+    estado !== undefined
+    && estado[codigo] !== undefined
+    && Object.keys(estado[codigo]).length > 0
   )
   {
     return true
@@ -44,14 +91,21 @@ function _devuelveCargando(){
   )
 }
 
-function _getValorMarket(state, codigo){
+function _renderView(estado, codigo, busqueda, moneda){
 
-  if(comprobarEstado(state,codigo)){
+  if(comprobarEstado(estado,codigo)){
 
-    return (
+    const fecha_completa = getFecha();
+    var valor = getValor(estado, codigo, fecha_completa, busqueda)
 
-      state[codigo].market
-    )
+    if(valor !== undefined){
+
+      return ( valor + " " + moneda )
+    }
+    else{
+
+      return( _devuelveCargando() )
+    }
   }
   else{
 
@@ -62,38 +116,32 @@ function _getValorMarket(state, codigo){
   }
 }
 
-function _getValorCierre(state, codigo){
+function _getValorMarket(estado, codigo, moneda = "USD"){
 
-  if(comprobarEstado(state,codigo)){
+  const busqueda = "market cap";
 
-    return (
+  return (
 
-      state[codigo].market
-    )
-  }
-  else{
-
-    return(
-
-      _devuelveCargando()
-    )
-  }
+    _renderView(estado, codigo, busqueda, moneda)
+  )
 }
 
-function _getValorVolumen(state, codigo){
+function _getValorCierre(estado, codigo, moneda = "EUR"){
 
-  if(comprobarEstado(state,codigo)){
+  const busqueda = "close ("+moneda+")";
 
-    return (
+  return (
 
-      state[codigo].market
-    )
-  }
-  else{
+    _renderView(estado, codigo, busqueda, moneda = "EUR")
+  )
+}
 
-    return(
+function _getValorVolumen(estado, codigo, moneda = "EUR"){
 
-      _devuelveCargando()
-    )
-  }
+  const busqueda = "volume";
+
+  return (
+
+    _renderView(estado, codigo, busqueda, moneda)
+  )
 }

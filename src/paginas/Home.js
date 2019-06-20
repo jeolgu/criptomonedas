@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import criptomonedas from '../data/criptomonedas.json';
 import CriptoMonedaItem from '../componentes/CriptoMonedaItem.js';
+import ASC from '../images/asc.png';
 
 const API_KEY = "L70IBKBWZI5PIGD9";
 const URL_API = "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY";
@@ -21,8 +22,25 @@ function peticionApi(me, codigo, moneda = "EUR"){
           "META":results[Object.keys(results)[0]],
           "HISTORICO" :results[Object.keys(results)[1]],
           "ERROR": 0,
-          "CODIGO": codigo
+          "CODIGO": codigo,
+
         };
+
+        if(datos[codigo]["FILTRADO"] !== undefined){
+
+          if(datos[codigo]["FILTRADO"] === 1){
+
+            datos[codigo]["FILTRADO"] = 1
+          }
+          else{
+
+            datos[codigo]["FILTRADO"] = 0
+          }
+        }
+        else{
+
+          datos[codigo]["FILTRADO"] = 1
+        }
 
         me.setState( datos )
       }
@@ -57,6 +75,7 @@ export class Home extends Component {
     }).forEach(function(a){
 
       datos[a] = {}
+      datos[a]["FILTRADO"] = 1;
     })
 
     this.state = datos;
@@ -72,6 +91,7 @@ export class Home extends Component {
   }
 
   _renderChanges(){
+
     console.log("hay cambios");
     console.log(this.state);
   }
@@ -80,18 +100,48 @@ export class Home extends Component {
 
     e.preventDefault();
     var me = this;
-    debugger;
     console.log("click filtro");
     var valor_filtro = document.getElementById("filtro").value;
 
+    // var indice_ = Object.keys(me.state).findIndex(function(a){ if(a === valor_filtro){ return true; } })
+    // if(indice_ !== undefined && indice_ !== -1){
 
+        var obj_ = me.state
+
+         Object.keys(me.state).forEach(function(a){
+
+           if(a !== valor_filtro) {
+
+             obj_[a]["FILTRADO"] = 0;
+           }
+         })
+
+        obj_[valor_filtro]["FILTRADO"] = 1;
+
+        this.setState(obj_);
+    // }
   }
 
   _quitarFiltro = (e) => {
 
     e.preventDefault();
-    debugger;
-    console.log("quitar filtro");
+    var me = this;
+    document.getElementById("filtro").value = ""
+    var obj_ = me.state
+
+    Object.keys(me.state).forEach(function(a){
+
+       obj_[a]["FILTRADO"] = 1;
+     })
+
+    this.setState(obj_);
+  }
+
+  _getOrdernar(tipo){
+
+    // debugger;
+    // e.preventDefault();
+    console.log(tipo)
   }
 
   render () {
@@ -129,9 +179,18 @@ export class Home extends Component {
             <tr>
               <th>Código</th>
               <th>Criptomoneda</th>
-              <th>Market Cap</th>
-              <th>Precio Cierre</th>
-              <th>Volumen</th>
+              <th className="cursor" data-orden="market" onClick={() => this._getOrdernar("market")}>
+                Market Cap
+                <img className="boton_orden oculto" src={ASC} alt="asc" />
+              </th>
+              <th className="cursor" data-orden="cierre" onClick={() => this._getOrdernar("cierre")}>
+                Precio Cierre
+                <img className="boton_orden oculto" src={ASC} alt="asc" />
+              </th>
+              <th className="cursor" data-orden="volumen" onClick={() => this._getOrdernar("volumen")}>
+                Volumen
+                <img className="boton_orden oculto" src={ASC} alt="asc" />
+              </th>
             </tr>
           </thead>
           {
@@ -142,7 +201,6 @@ export class Home extends Component {
           }
 
         </table>
-        {this._renderChanges()}
       </header>
     )
   }
